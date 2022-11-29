@@ -32,7 +32,7 @@ class CheckoutPageState extends State<CheckoutPage> {
       const PermessionsPage(),
       const FriendsScreen(),
       const ProfileEdit(),
-      const CheckoutEdit(),
+      CheckoutEdit(),
     ];
 
     return Scaffold(
