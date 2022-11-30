@@ -21,8 +21,9 @@ class PermissionDetail extends StatelessWidget {
     final permession = Provider.of<PermissonProvider>(context).findById(id);
     void goToBack() {
       PermissionDetailPageState().backButton();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => const HomePage())));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (Route<dynamic> route) => false);
     }
 
     return WillPopScope(

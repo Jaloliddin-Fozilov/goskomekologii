@@ -64,4 +64,8 @@ class FriendProvider with ChangeNotifier {
   FriendModel findById(int id) {
     return _list.firstWhere((friend) => friend.id == id);
   }
+
+  int changeTab(int index) {
+    return index;
+  }
 }

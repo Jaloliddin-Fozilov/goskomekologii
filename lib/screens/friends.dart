@@ -45,11 +45,10 @@ class FriendsScreen extends StatelessWidget {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(
-                  context,
+              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: ((context) => const FriendEditScreen()),
-                  )),
+                      builder: (context) => const FriendEditScreen()),
+                  (Route<dynamic> route) => false),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
               ),

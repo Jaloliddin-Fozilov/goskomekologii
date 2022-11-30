@@ -261,11 +261,9 @@ class FriendEdit extends StatelessWidget {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) => const FriendsPage()),
-                  )),
+              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const FriendsPage()),
+                  (Route<dynamic> route) => false),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
               ),

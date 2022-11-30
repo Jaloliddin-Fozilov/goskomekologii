@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/screens/checkout_animals.dart';
 import 'package:goskomekologii/screens/checkout_edit.dart';
+import 'package:goskomekologii/screens/checkout_payment.dart';
 
 import '../services/contants.dart';
 import '../widgets/header_actions.dart';
@@ -10,14 +12,14 @@ import 'permessions_page.dart';
 import 'permission_detail.dart';
 import 'profile_edit.dart';
 
-class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({super.key});
+class CheckoutPaymentPage extends StatefulWidget {
+  const CheckoutPaymentPage({super.key});
 
   @override
-  State<CheckoutPage> createState() => _CheckoutPageState();
+  State<CheckoutPaymentPage> createState() => _CheckoutPaymentPageState();
 }
 
-class _CheckoutPageState extends State<CheckoutPage> {
+class _CheckoutPaymentPageState extends State<CheckoutPaymentPage> {
   int index = 4;
   int _currentIndex = 1;
 
@@ -32,7 +34,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       const PermessionsPage(),
       const FriendsScreen(),
       const ProfileEdit(),
-      CheckoutEdit(),
+      CheckoutPayment(),
     ];
 
     return Scaffold(

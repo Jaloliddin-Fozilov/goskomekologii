@@ -94,11 +94,12 @@ class _PermessionsPageState extends State<PermessionsPage> {
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: ((context) => const CheckoutPage()),
-                                )),
+                            onPressed: () => Navigator.of(context)
+                                .pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CheckoutPage()),
+                                    (Route<dynamic> route) => false),
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromRGBO(18, 158, 83, 1),
