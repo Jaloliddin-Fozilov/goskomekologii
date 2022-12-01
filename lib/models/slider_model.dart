@@ -61,6 +61,8 @@ List<SliderModel> getSlides() {
       "Для начала начисления Кешбека вам необходимо добавить в нашу платежную систему ваши карты еще раз.");
   slides.add(sliderModel);
 
+  sliderModel = SliderModel();
+
   // Item 4
   sliderModel.setImage("assets/images/intro_fourth.png");
   sliderModel.setTitle("Подача обращений");

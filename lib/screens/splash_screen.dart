@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/screens/intro_screen.dart';
 
 import 'home_page.dart';
 
@@ -14,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Future.delayed(const Duration(seconds: 2), () async {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const IntroScreen()),
           (Route<dynamic> route) => false);
     });
 
