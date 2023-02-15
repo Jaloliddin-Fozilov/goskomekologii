@@ -77,12 +77,17 @@ class _PermessionsPageState extends State<PermessionsPage> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: permessionProvider.currentList.length,
-                          itemBuilder: (ctx, i) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: PermissionItem(
-                              id: permessionProvider.currentList[i].id,
+                        child: RefreshIndicator(
+                          onRefresh: () async =>
+                              permessionProvider.getCurrentPermissions(),
+                          child: ListView.builder(
+                            itemCount: permessionProvider.currentList.length,
+                            itemBuilder: (ctx, i) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: PermissionItem(
+                                id: permessionProvider.currentList[i].id,
+                              ),
                             ),
                           ),
                         ),
@@ -114,12 +119,16 @@ class _PermessionsPageState extends State<PermessionsPage> {
                 );
               case _Tab.archive:
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: permessionProvider.list.length,
-                    itemBuilder: (ctx, i) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: PermissionItem(
-                        id: permessionProvider.list[i].id,
+                  child: RefreshIndicator(
+                    onRefresh: () async =>
+                        permessionProvider.getArchivePermissions(),
+                    child: ListView.builder(
+                      itemCount: permessionProvider.archiveList.length,
+                      itemBuilder: (ctx, i) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: PermissionItem(
+                          id: permessionProvider.archiveList[i].id,
+                        ),
                       ),
                     ),
                   ),

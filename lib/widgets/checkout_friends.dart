@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/checkout_model.dart';
 import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:goskomekologii/providers/friend_provider.dart';
+import 'package:goskomekologii/screens/friends_page.dart';
 import 'package:goskomekologii/services/contants.dart';
 import 'package:provider/provider.dart';
 
-class CheckoutFriends extends StatelessWidget {
+class CheckoutFriends extends StatefulWidget {
   CheckoutFriends({
     Key? key,
-    required this.currentUser,
   }) : super(key: key);
 
-  final FriendModel currentUser;
-
   @override
-  Widget build(BuildContext context) {
-    final friends = Provider.of<FriendProvider>(context).list;
-    void showFriends(BuildContext context) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
+  State<CheckoutFriends> createState() => _CheckoutFriendsState();
+}
+
+class _CheckoutFriendsState extends State<CheckoutFriends> {
+  int? selectedId;
+  bool _initVisit = true;
+  late FriendModel currentUser;
+
+  Future<FriendModel> showFriends(BuildContext context) async {
+    final friendProvider = Provider.of<FriendProvider>(context, listen: false);
+
+    final friends = friendProvider.list;
+    await showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return StatefulBuilder(builder: (c, setState) {
           return AlertDialog(
             titlePadding: const EdgeInsets.all(0),
             title: Align(
@@ -58,9 +68,15 @@ class CheckoutFriends extends StatelessWidget {
                       children: friends
                           .map(
                             (friend) => GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                setState(() {
+                                  selectedId = friend.id;
+                                  currentUser = friend;
+                                });
+                              },
                               child: Card(
-                                shape: friend.id == 1
+                                shape: selectedId != null &&
+                                        friend.id == selectedId
                                     ? RoundedRectangleBorder(
                                         side: const BorderSide(
                                             color: Colors.orange, width: 2.0),
@@ -173,100 +189,146 @@ class CheckoutFriends extends StatelessWidget {
               )
             ],
           );
-        },
-      );
-    }
+        });
+      },
+    );
+    return currentUser;
+  }
 
-    void showNotFriends(BuildContext context) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            titlePadding: const EdgeInsets.all(0),
-            title: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.green,
-                ),
+  void showNotFriends(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          titlePadding: const EdgeInsets.all(0),
+          title: Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.close,
+                color: Colors.green,
               ),
             ),
-            contentPadding: const EdgeInsets.only(top: 0, right: 10, left: 10),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
-                  'В вашем аккаунте отсутствуют данные ваших друзей',
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10),
-              ],
-            ),
-            actions: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      const Expanded(
-                        flex: 1,
-                        child: SizedBox(),
-                      ),
-                      Expanded(
-                        flex: 6,
-                        child: SizedBox(
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              showFriends(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(18, 158, 83, 1),
-                            ),
-                            child: const Text('Добаавить данные друга'),
+          ),
+          contentPadding: const EdgeInsets.only(top: 0, right: 10, left: 10),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text(
+                'В вашем аккаунте отсутствуют данные ваших друзей',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+          actions: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: SizedBox(),
+                    ),
+                    Expanded(
+                      flex: 6,
+                      child: SizedBox(
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: ((context) => const FriendsPage()),
+                                ));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(18, 158, 83, 1),
                           ),
+                          child: const Text('Добавить данные друга'),
                         ),
                       ),
-                      const Expanded(
-                        flex: 1,
-                        child: SizedBox(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              )
-            ],
-          );
-        },
-      );
+                    ),
+                    const Expanded(
+                      flex: 1,
+                      child: SizedBox(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void updateCheckoutModel(BuildContext context) {
+    final provider = Provider.of<CheckoutProvider>(context, listen: false);
+    final checkoutModel = provider.currentCheckout;
+    provider.updateCheckout(CheckoutModel(
+      regionId: checkoutModel.regionId,
+      districtId: checkoutModel.districtId,
+      startDate: checkoutModel.startDate,
+      endDate: checkoutModel.endDate,
+      type: checkoutModel.type,
+      status: checkoutModel.status,
+      price: checkoutModel.price,
+      animals: checkoutModel.animals,
+      friendId: currentUser.id,
+    ));
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_initVisit) {
+      currentUser =
+          Provider.of<FriendProvider>(context, listen: false).currentUser;
+
+      _initVisit = false;
     }
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final friendProvider = Provider.of<FriendProvider>(context, listen: false);
 
     return Row(
       children: [
-        Expanded(
-          flex: 8,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            height: 60,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: const Color.fromARGB(255, 224, 224, 224),
+        Builder(builder: (context) {
+          return Expanded(
+            flex: 8,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              height: 60,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color.fromARGB(255, 224, 224, 224),
+                ),
+                borderRadius: BorderRadius.circular(5),
               ),
-              borderRadius: BorderRadius.circular(5),
+              child: Text('${currentUser.surname} ${currentUser.firstName}'),
             ),
-            child: Text('${currentUser.surname} ${currentUser.firstName}'),
-          ),
-        ),
+          );
+        }),
         const SizedBox(width: 15),
         Expanded(
           flex: 2,
           child: InkWell(
-            onTap: () => showNotFriends(context),
+            onTap: () async {
+              friendProvider.list.isEmpty
+                  ? showNotFriends(context)
+                  : await showFriends(context).then((friend) => setState(() {
+                        currentUser = friend;
+                      }));
+              updateCheckoutModel(context);
+            },
             child: Container(
               width: double.infinity,
               height: 60,

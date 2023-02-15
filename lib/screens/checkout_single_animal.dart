@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/animal_model.dart';
 import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:goskomekologii/providers/friend_provider.dart';
 import 'package:goskomekologii/providers/permission_provider.dart';
 import 'package:goskomekologii/screens/checkout_page.dart';
@@ -10,50 +12,21 @@ import 'package:goskomekologii/widgets/checkout_friends.dart';
 import 'package:goskomekologii/widgets/checkout_pick_date.dart';
 import 'package:provider/provider.dart';
 
-class CheckoutSingleAnimal extends StatelessWidget {
+class CheckoutSingleAnimal extends StatefulWidget {
   const CheckoutSingleAnimal({super.key});
 
   @override
+  State<CheckoutSingleAnimal> createState() => _CheckoutSingleAnimalState();
+}
+
+class _CheckoutSingleAnimalState extends State<CheckoutSingleAnimal> {
+  final _formKey = GlobalKey<FormState>();
+  // final permession = Provider.of<PermissonProvider>(context).list[0];
+
+  @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    // final permession = Provider.of<PermissonProvider>(context).list[0];
-    final List<Map<String, dynamic>> list = [
-      {
-        'title': 'Перепел',
-        'count': 653,
-        'price': 2736,
-        'input': 10,
-      },
-      {
-        'title': 'Утки',
-        'count': 4812,
-        'price': 2736,
-        'input': 5,
-      },
-      {
-        'title': 'Гуси',
-        'count': 1983,
-        'price': 8028,
-        'input': 12,
-      }
-    ];
-    int getCount() {
-      int currentCount = 0;
-      list.forEach((animal) {
-        currentCount = currentCount + animal['input'] as int;
-      });
-      return currentCount;
-    }
-
-    int getPrice() {
-      int currentPrice = 0;
-      list.forEach((animal) {
-        currentPrice =
-            currentPrice + (animal['price'] * animal['input'] as int);
-      });
-      return currentPrice;
-    }
-
+    final checkoutProvider = Provider.of<CheckoutProvider>(context);
+    List<AnimalModel> animals = checkoutProvider.currentCheckout.animals;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,7 +73,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                           const SizedBox(height: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: list
+                            children: animals
                                 .map(
                                   (animal) => Container(
                                     width:
@@ -119,9 +92,9 @@ class CheckoutSingleAnimal extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(animal['title']),
+                                        Text(animal.name),
                                         Text(
-                                          '${animal['count']} шт.',
+                                          '${animal.count} шт.',
                                           style: const TextStyle(
                                             color: Colors.grey,
                                           ),
@@ -140,7 +113,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                           const SizedBox(height: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: list
+                            children: animals
                                 .map(
                                   (animal) => Container(
                                     alignment: Alignment.center,
@@ -153,7 +126,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Text(
-                                      '${animal['price'].toString()} сум',
+                                      '${animal.price.toString()} сум',
                                       style: const TextStyle(
                                         fontSize: 16,
                                       ),
@@ -172,7 +145,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                             key: _formKey,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: list
+                              children: animals
                                   .map(
                                     (animal) => Column(
                                       children: [
@@ -184,13 +157,18 @@ class CheckoutSingleAnimal extends StatelessWidget {
                                               6,
                                           child: TextFormField(
                                             initialValue:
-                                                animal['input'].toString(),
+                                                animal.input.toString(),
                                             textAlign: TextAlign.center,
                                             decoration: const InputDecoration(
                                               border: OutlineInputBorder(
                                                 borderSide: BorderSide(),
                                               ),
                                             ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                animal.input = int.parse(value);
+                                              });
+                                            },
                                             keyboardType: TextInputType.number,
                                             maxLines: 1,
                                           ),
@@ -206,7 +184,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    'В разрешение будет добавлено ${getCount()} птиц',
+                    'В разрешение будет добавлено ${checkoutProvider.getCount()} птиц',
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
@@ -232,7 +210,7 @@ class CheckoutSingleAnimal extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '${getPrice()} сум',
+                    '${checkoutProvider.getPrice} сум',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28,

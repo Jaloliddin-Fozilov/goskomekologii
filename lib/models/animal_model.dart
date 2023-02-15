@@ -1,13 +1,19 @@
 class AnimalModel {
   final String id;
   final String name;
-  final int purchased;
-  final int mined;
+  int? purchased;
+  int? mined;
+  int? count;
+  double? price;
+  int? input;
 
   AnimalModel({
     required this.id,
     required this.name,
-    required this.purchased,
-    required this.mined,
+    this.purchased = 0,
+    this.mined = 0,
+    this.count = 0,
+    this.price = 0,
+    this.input = 0,
   });
 }

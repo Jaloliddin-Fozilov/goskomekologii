@@ -47,8 +47,8 @@ class _DateBlockDetailScreenState extends State<DateBlockDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime startDate = widget.permession.startDate;
-    DateTime endDate = widget.permession.endDate;
+    DateTime startDate = DateTime.now();
+    DateTime endDate = DateTime.now();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

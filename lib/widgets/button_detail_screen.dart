@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/providers/permission_provider.dart';
+import 'package:goskomekologii/screens/permessions_page.dart';
+import 'package:goskomekologii/services/update_all_data.dart';
+import 'package:provider/provider.dart';
 
 import '../models/permission_model.dart';
 import '../screens/home_page.dart';
 
-class ButtonsDetailsScreen extends StatelessWidget {
+class ButtonsDetailsScreen extends StatefulWidget {
   const ButtonsDetailsScreen({
     Key? key,
     required this.permession,
@@ -11,6 +15,12 @@ class ButtonsDetailsScreen extends StatelessWidget {
 
   final PermissionModel permession;
 
+  @override
+  State<ButtonsDetailsScreen> createState() => _ButtonsDetailsScreenState();
+}
+
+class _ButtonsDetailsScreenState extends State<ButtonsDetailsScreen> {
+  bool _isLoading = false;
   void showAlertDialog(BuildContext context, PermissionModel permission) {
     showDialog(
       context: context,
@@ -46,7 +56,14 @@ class ButtonsDetailsScreen extends StatelessWidget {
                       child: SizedBox(
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () => showDoneAlertDialog(context),
+                          onPressed: () async {
+                            await Provider.of<PermissonProvider>(context,
+                                    listen: false)
+                                .finishPermission(permission.id)
+                                .then((value) => value
+                                    ? showDoneAlertDialog(context)
+                                    : showErroralertDialog(context));
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color.fromRGBO(18, 158, 83, 1),
@@ -64,7 +81,7 @@ class ButtonsDetailsScreen extends StatelessWidget {
                       child: SizedBox(
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () => showErroralertDialog(context),
+                          onPressed: () => Navigator.of(context).pop(),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
                           ),
@@ -236,53 +253,66 @@ class ButtonsDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return permession.status == 'active' && !permession.dontSend
-        ? Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => const HomePage()),
+    return widget.permession.status == 'active' && !widget.permession.dontSend
+        ? _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await Provider.of<PermissonProvider>(context,
+                                listen: false)
+                            .updateAnimalPermissions(widget.permession.id);
+                        await updateAllData(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => const HomePage()),
+                            ));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
+                      ),
+                      child: const Text('Сохранить данные'),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
+                  const SizedBox(height: 20),
+                  const Text(
+                    '- или -',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
                   ),
-                  child: const Text('Сохранить данные'),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                '- или -',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => showAlertDialog(context, permession),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          showAlertDialog(context, widget.permession),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                      ),
+                      child: const Text('Закончить и отправить отчет!'),
+                    ),
                   ),
-                  child: const Text('Закончить и отправить отчет!'),
-                ),
-              ),
-            ],
-          )
+                ],
+              )
         : SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: permession.dontSend
-                  ? () => showAlertDialog(context, permession)
+              onPressed: widget.permession.dontSend
+                  ? () => showAlertDialog(context, widget.permession)
                   : () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -290,12 +320,12 @@ class ButtonsDetailsScreen extends StatelessWidget {
                         ),
                       ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: permession.dontSend
+                backgroundColor: widget.permession.dontSend
                     ? Colors.orange
                     : const Color.fromRGBO(18, 158, 83, 1),
               ),
               child: Text(
-                permession.dontSend
+                widget.permession.dontSend
                     ? 'Отправить отчёт повторно!'
                     : 'Отчёт отправлен УСПЕШНО!',
               ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:goskomekologii/providers/auth_provider.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/friend_provider.dart';
@@ -21,20 +23,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => FriendProvider(),
-      child: ChangeNotifierProvider(
-        create: (context) => PermissonProvider(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [GlobalMaterialLocalizations.delegate],
-          supportedLocales: const [Locale('ru')],
-          title: 'Госкомэкологии',
-          theme: ThemeData(
-            fontFamily: GoogleFonts.montserrat().fontFamily,
-          ),
-          home: const SplashScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => PermissonProvider()),
+        ChangeNotifierProvider(create: (context) => FriendProvider()),
+        ChangeNotifierProvider(create: (context) => CheckoutProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('ru')],
+        title: 'Госкомэкологии',
+        theme: ThemeData(
+          fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
+        home: const SplashScreen(),
       ),
     );
   }

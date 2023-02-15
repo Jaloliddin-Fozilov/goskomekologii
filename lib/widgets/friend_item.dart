@@ -12,6 +12,7 @@ class FriendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(friend.id);
     return Card(
       child: Padding(
         padding:

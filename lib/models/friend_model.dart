@@ -4,7 +4,7 @@ class FriendModel {
   final String firstName;
   final String patronymic;
   final String imageUrl;
-  final String phone_number;
+  late final String phone_number;
   final String hunting_ticketCode;
   final int hunting_ticketNumber;
   final String weapon_permitCode;

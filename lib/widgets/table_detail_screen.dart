@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/providers/permission_provider.dart';
+import 'package:goskomekologii/services/max_min_input.dart';
+import 'package:provider/provider.dart';
 
 import '../models/permission_model.dart';
 
@@ -14,6 +17,7 @@ class TableDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PermissonProvider>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -117,6 +121,20 @@ class TableDetailScreen extends StatelessWidget {
                                     ),
                                     keyboardType: TextInputType.number,
                                     maxLines: 1,
+                                    inputFormatters: [
+                                      NumericalRangeFormatter(
+                                          min: 0,
+                                          max: double.parse(
+                                              animal.purchased!.toString()))
+                                    ],
+                                    onChanged: (value) {
+                                      if (value.isNotEmpty) {
+                                        provider.changePermissionAnimals(
+                                            permession.id,
+                                            int.parse(animal.id),
+                                            int.parse(value));
+                                      }
+                                    },
                                   ),
                                 ),
                               ],

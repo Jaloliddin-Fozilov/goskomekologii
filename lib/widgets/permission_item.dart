@@ -81,14 +81,14 @@ class PermissionItem extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${permession.title} от ${permession.startDate.year}.${permession.startDate.month}.${permession.startDate.day}',
+                                  '${permession.title} от ${permession.startDate}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  '${permession.address}${permession.startDate.year}.${permession.startDate.month}.${permession.startDate.day}-${permession.endDate.year}.${permession.endDate.month}.${permession.endDate.day}',
+                                  '${permession.address} ${permession.startDate}-${permession.endDate}',
                                 ),
                               ],
                             ),

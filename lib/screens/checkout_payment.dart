@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:goskomekologii/providers/friend_provider.dart';
 import 'package:goskomekologii/providers/permission_provider.dart';
 import 'package:goskomekologii/screens/checkout_page.dart';
 import 'package:goskomekologii/screens/checkout_single_animals_page.dart';
+import 'package:goskomekologii/screens/home_page.dart';
 import 'package:goskomekologii/screens/permission_detail_page.dart';
 import 'package:goskomekologii/services/contants.dart';
+import 'package:goskomekologii/services/update_all_data.dart';
 import 'package:goskomekologii/widgets/checkout_checkboxes.dart';
 import 'package:goskomekologii/widgets/checkout_dropdown.dart';
 import 'package:goskomekologii/widgets/checkout_friends.dart';
@@ -17,69 +20,73 @@ import 'package:provider/provider.dart';
 class CheckoutPayment extends StatelessWidget {
   CheckoutPayment({super.key});
 
-  void showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          titlePadding: const EdgeInsets.all(0),
-          title: Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.close,
-                color: Colors.green,
+  void showAlertDialog(BuildContext context) async {
+    final checkoutProvider =
+        Provider.of<CheckoutProvider>(context, listen: false);
+    final status = await checkoutProvider.createPermission();
+
+    await updateAllData(context);
+    if (status)
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.all(0),
+            title: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.green,
+                ),
               ),
             ),
-          ),
-          contentPadding: const EdgeInsets.only(top: 0, right: 10, left: 10),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/images/done_alert.png',
-                width: 200,
-              ),
-              const Text(
-                'Оплата была \n выполнена успешно',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Разрешение № 124-042/22',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+            contentPadding: const EdgeInsets.only(top: 0, right: 10, left: 10),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/done_alert.png',
+                  width: 200,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const Text(
-                'успешно сформированно!',
-                textAlign: TextAlign.center,
+                const Text(
+                  'Оплата была \n выполнена успешно',
+                  textAlign: TextAlign.center,
+                ),
+                // const SizedBox(height: 10),
+                // const Text(
+                //   'Разрешение № 124-042/22',
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                //   textAlign: TextAlign.center,
+                // ),
+                // const Text(
+                //   'успешно сформированно!',
+                //   textAlign: TextAlign.center,
+                // ),
+              ],
+            ),
+            actions: [
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      (Route<dynamic> route) => false),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
+                  ),
+                  child: const Text('Посмотреть детали'),
+                ),
               ),
             ],
-          ),
-          actions: [
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const PermissionDetailPage(id: 1)),
-                    (Route<dynamic> route) => false),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
-                ),
-                child: const Text('Посмотреть детали'),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        },
+      );
   }
 
   @override

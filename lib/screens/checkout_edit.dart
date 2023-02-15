@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/checkout_model.dart';
 import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:goskomekologii/providers/friend_provider.dart';
 import 'package:goskomekologii/screens/checkout_animals_page.dart';
 import 'package:goskomekologii/screens/checkout_page.dart';
@@ -15,26 +17,6 @@ class CheckoutEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<FriendProvider>(context).currentUser;
-    List<String> _regions = [
-      "Ташкентская область",
-    ];
-    List<String> _districts = [
-      "Юкоричирчикский район",
-      "Янгиюльский район",
-      "Уртачирчикский район",
-      "Куйичирчикский район",
-      "Пскентский район",
-      "Паркентский район",
-      "Аккурганский район",
-      "Ахангаранский район",
-      "Кибрайский район",
-      "Чиназский район",
-      "Букинский район",
-      "Бостанлыкский район",
-      "Бекабадский район",
-      "Зангиатинский район",
-    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -59,11 +41,11 @@ class CheckoutEdit extends StatelessWidget {
                   const SizedBox(height: 10),
                   const Text('Регион добычи'),
                   const SizedBox(height: 10),
-                  CheckoutDropdown(list: _regions),
+                  const CheckoutDropdown(isRegions: true),
                   const SizedBox(height: 10),
                   const Text('Район добычи'),
                   const SizedBox(height: 10),
-                  CheckoutDropdown(list: _districts),
+                  const CheckoutDropdown(isRegions: false),
                   const SizedBox(height: 10),
                   const Text('Срок проведения добычи животных'),
                   const SizedBox(height: 10),
@@ -71,7 +53,7 @@ class CheckoutEdit extends StatelessWidget {
                   const SizedBox(height: 10),
                   const Text('Для кого оформляется разрешение'),
                   const SizedBox(height: 10),
-                  CheckoutFriends(currentUser: currentUser)
+                  CheckoutFriends()
                 ],
               ),
             ),
@@ -83,9 +65,31 @@ class CheckoutEdit extends StatelessWidget {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: ((context) => const CheckoutAnimalsPage()),
-              )),
+              onPressed: () async {
+                final provider =
+                    Provider.of<CheckoutProvider>(context, listen: false);
+                final checkoutModel = provider.currentCheckout;
+                final currentUserId =
+                    Provider.of<FriendProvider>(context, listen: false)
+                        .currentUser
+                        .id;
+                if (checkoutModel.friendId == 0) {
+                  provider.updateCheckout(CheckoutModel(
+                    regionId: checkoutModel.regionId,
+                    districtId: checkoutModel.districtId,
+                    startDate: checkoutModel.startDate,
+                    endDate: checkoutModel.endDate,
+                    type: checkoutModel.type,
+                    status: checkoutModel.status,
+                    price: checkoutModel.price,
+                    animals: checkoutModel.animals,
+                    friendId: currentUserId,
+                  ));
+                }
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: ((context) => const CheckoutAnimalsPage()),
+                ));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
               ),

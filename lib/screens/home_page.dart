@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/providers/auth_provider.dart';
+import 'package:goskomekologii/providers/friend_provider.dart';
+import 'package:goskomekologii/providers/permission_provider.dart';
+import 'package:goskomekologii/screens/permission_page.dart';
+import 'package:provider/provider.dart';
 
 import '../services/contants.dart';
 import '../widgets/header_actions.dart';

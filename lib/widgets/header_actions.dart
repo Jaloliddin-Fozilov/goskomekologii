@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/services/update_profile_image.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/friend_provider.dart';
@@ -31,9 +32,17 @@ class HeaderActions extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 10),
-        CircleAvatar(
-          backgroundImage: AssetImage(currentUser.imageUrl),
-          radius: 24,
+        InkWell(
+          onTap: () => updateProfileImage(context),
+          child: currentUser.imageUrl.contains('assets/images/')
+              ? CircleAvatar(
+                  backgroundImage: AssetImage(currentUser.imageUrl),
+                  radius: 24,
+                )
+              : CircleAvatar(
+                  backgroundImage: NetworkImage(currentUser.imageUrl),
+                  radius: 24,
+                ),
         ),
         const SizedBox(width: 16),
       ],

@@ -18,7 +18,9 @@ class PermissionDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(id);
     final permession = Provider.of<PermissonProvider>(context).findById(id);
+    print(permession.friendId);
     void goToBack() {
       PermissionDetailPageState().backButton();
       Navigator.of(context).pushAndRemoveUntil(

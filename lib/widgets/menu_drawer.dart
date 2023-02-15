@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:goskomekologii/providers/friend_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/friends_page.dart';
 import '../screens/home_page.dart';
@@ -11,6 +13,7 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _currentUser = Provider.of<FriendProvider>(context).currentUser;
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -20,13 +23,15 @@ class MainDrawer extends StatelessWidget {
             const SizedBox(height: 0),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'Пономарев Дмитрий',
+                      '${_currentUser.surname} ${_currentUser.firstName}',
                       style: TextStyle(
                         color: const Color.fromRGBO(18, 21, 76, 1),
                         fontSize: 30,
@@ -36,7 +41,7 @@ class MainDrawer extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'ID: 233256',
+                      'ID: ${_currentUser.id}',
                       style: TextStyle(
                         color: Colors.green,
                         fontSize: 18,

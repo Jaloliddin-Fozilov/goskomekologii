@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/checkout_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutPickDate extends StatefulWidget {
   const CheckoutPickDate({
@@ -10,29 +13,55 @@ class CheckoutPickDate extends StatefulWidget {
 }
 
 class _CheckoutPickDateState extends State<CheckoutPickDate> {
+  bool _initVisit = true;
+
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  DateTime endDate = DateTime(DateTime.now().year, DateTime.now().month + 2);
+
   void _firstPickDate(BuildContext context) {
+    final provider = Provider.of<CheckoutProvider>(context, listen: false);
+    final checkoutModel = provider.currentCheckout;
     showDatePicker(
             context: context,
             helpText: "Дата начала",
             initialDate: DateTime.now(),
-            firstDate: DateTime(2022),
-            lastDate: DateTime(2023),
+            firstDate: DateTime(DateTime.now().year),
+            lastDate: DateTime(DateTime.now().year, DateTime.now().month + 1),
             locale: const Locale('ru'))
         .then((pickedStartDate) {
       if (pickedStartDate != null) {
         startDate = pickedStartDate;
+        provider.updateCheckout(CheckoutModel(
+          regionId: checkoutModel.regionId,
+          districtId: checkoutModel.districtId,
+          startDate: startDate,
+          endDate: endDate,
+          type: checkoutModel.type,
+          status: checkoutModel.status,
+          price: checkoutModel.price,
+          animals: checkoutModel.animals,
+        ));
         showDatePicker(
                 context: context,
                 helpText: "Дата окончания",
                 initialDate: DateTime.now(),
-                firstDate: DateTime(2022),
-                lastDate: DateTime(2023),
+                firstDate: DateTime.now(),
+                lastDate:
+                    DateTime(DateTime.now().year, DateTime.now().month + 2),
                 locale: const Locale('ru'))
             .then((pickedEndDate) {
           if (pickedEndDate != null) {
             endDate = pickedEndDate;
+            provider.updateCheckout(CheckoutModel(
+              regionId: checkoutModel.regionId,
+              districtId: checkoutModel.districtId,
+              startDate: startDate,
+              endDate: endDate,
+              type: checkoutModel.type,
+              status: checkoutModel.status,
+              price: checkoutModel.price,
+              animals: checkoutModel.animals,
+            ));
             setState(() {});
           }
         });
@@ -41,16 +70,28 @@ class _CheckoutPickDateState extends State<CheckoutPickDate> {
   }
 
   void _secondPickDate(BuildContext context) {
+    final provider = Provider.of<CheckoutProvider>(context, listen: false);
+    final checkoutModel = provider.currentCheckout;
     showDatePicker(
             context: context,
             helpText: "Дата окончания",
             initialDate: DateTime.now(),
-            firstDate: DateTime(2022),
-            lastDate: DateTime(2023),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(DateTime.now().year, DateTime.now().month + 2),
             locale: const Locale('ru'))
         .then((pickedEndDate) {
       if (pickedEndDate != null) {
         endDate = pickedEndDate;
+        provider.updateCheckout(CheckoutModel(
+          regionId: checkoutModel.regionId,
+          districtId: checkoutModel.districtId,
+          startDate: startDate,
+          endDate: endDate,
+          type: checkoutModel.type,
+          status: checkoutModel.status,
+          price: checkoutModel.price,
+          animals: checkoutModel.animals,
+        ));
         setState(() {});
       }
     });
@@ -58,6 +99,14 @@ class _CheckoutPickDateState extends State<CheckoutPickDate> {
 
   @override
   Widget build(BuildContext context) {
+    final checkoutProvider =
+        Provider.of<CheckoutProvider>(context, listen: false);
+    CheckoutModel checkoutModel = checkoutProvider.currentCheckout;
+    if (_initVisit) {
+      startDate = checkoutModel.startDate;
+      endDate = checkoutModel.endDate;
+      _initVisit = false;
+    }
     return Row(
       children: [
         Expanded(

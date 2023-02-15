@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:goskomekologii/main.dart';
 import 'package:goskomekologii/models/slider_model.dart';
+import 'package:goskomekologii/providers/auth_provider.dart';
 import 'package:goskomekologii/screens/home_page.dart';
 import 'package:goskomekologii/services/contants.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -33,6 +35,8 @@ class _LoginScreensState extends State<LoginScreens> {
   bool numberDone = false;
   String pinCode = '';
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -52,10 +56,34 @@ class _LoginScreensState extends State<LoginScreens> {
       Container(),
       Container(),
     ];
-    void goToHomeLogin() async {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-          (Route<dynamic> route) => false);
+
+    submit(BuildContext context) async {
+      if (currentIndex == 0) {
+        AuthProvider authProvider =
+            Provider.of<AuthProvider>(context, listen: false);
+
+        final statusAuth =
+            await authProvider.authWithPhone(phoneNumber, context);
+        if (statusAuth) {
+          setState(() {
+            currentIndex++;
+            numberDone = false;
+            FocusManager.instance.primaryFocus?.unfocus();
+            _isLoading = false;
+          });
+          _controller.nextPage(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.bounceIn,
+          );
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+            (Route<dynamic> route) => false);
+      }
     }
 
     return Scaffold(
@@ -249,37 +277,33 @@ class _LoginScreensState extends State<LoginScreens> {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: numberDone
-                        ? () {
-                            if (currentIndex == 0) {
-                              setState(() {
-                                currentIndex++;
-                                numberDone = false;
-                                FocusManager.instance.primaryFocus?.unfocus();
-                              });
-                              _controller.nextPage(
-                                duration: const Duration(milliseconds: 100),
-                                curve: Curves.bounceIn,
-                              );
-                            } else {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomePage()),
-                                  (Route<dynamic> route) => false);
-                            }
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(18, 158, 83, 1),
-                    ),
-                    child: Text(
-                        currentIndex == 0 ? 'Отправить SMS-код' : 'Продолжить'),
-                  ),
-                ),
+                _isLoading
+                    ? const SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(),
+                      )
+                    : SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: numberDone
+                              ? () async {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  await submit(context);
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(18, 158, 83, 1),
+                          ),
+                          child: Text(currentIndex == 0
+                              ? 'Отправить SMS-код'
+                              : 'Продолжить'),
+                        ),
+                      ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

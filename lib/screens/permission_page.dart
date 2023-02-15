@@ -21,7 +21,7 @@ class _PermissionPageState extends State<PermissionPage> {
   Widget build(BuildContext context) {
     List _pages = [
       const Home(),
-      PermessionsPage(),
+      const PermessionsPage(),
       const FriendsScreen(),
       const ProfileEdit(),
     ];

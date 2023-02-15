@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/checkout_model.dart';
 import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/checkout_provider.dart';
 import 'package:goskomekologii/providers/friend_provider.dart';
 import 'package:goskomekologii/providers/permission_provider.dart';
 import 'package:goskomekologii/screens/checkout_page.dart';
@@ -12,11 +14,24 @@ import 'package:goskomekologii/widgets/checkout_friends.dart';
 import 'package:goskomekologii/widgets/checkout_pick_date.dart';
 import 'package:provider/provider.dart';
 
-class CheckoutAnimals extends StatelessWidget {
+class CheckoutAnimals extends StatefulWidget {
   CheckoutAnimals({super.key});
 
   @override
+  State<CheckoutAnimals> createState() => _CheckoutAnimalsState();
+}
+
+class _CheckoutAnimalsState extends State<CheckoutAnimals> {
+  bool _initVisit = true;
+
+  @override
   Widget build(BuildContext context) {
+    if (_initVisit) {
+      final provider = Provider.of<CheckoutProvider>(context);
+      CheckoutModel checkoutModel = provider.currentCheckout;
+      _initVisit = false;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

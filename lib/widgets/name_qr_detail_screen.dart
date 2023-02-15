@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goskomekologii/models/friend_model.dart';
+import 'package:goskomekologii/providers/friend_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../models/permission_model.dart';
 
@@ -12,15 +15,22 @@ class NameQrBlockDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final friendProvider = Provider.of<FriendProvider>(context, listen: true);
+    int currentUserId = friendProvider.currentUser.id;
+
+    FriendModel friend = permession.friendId == currentUserId
+        ? friendProvider.currentUser
+        : friendProvider.findById(permession.friendId);
+    print(friend);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Пономарев Дмитрий',
-              style: TextStyle(
+            Text(
+              friend.firstName,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -30,7 +40,7 @@ class NameQrBlockDetailScreen extends StatelessWidget {
               children: [
                 const Text('Охотничий билет  '),
                 Text(
-                  permession.hunting_ticket,
+                  '${friend.hunting_ticketCode}-${friend.hunting_ticketNumber}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -42,7 +52,7 @@ class NameQrBlockDetailScreen extends StatelessWidget {
               children: [
                 const Text('Разрешение на оружие  '),
                 Text(
-                  permession.weapon_permit,
+                  '${friend.weapon_permitCode}-${friend.weapon_permitNumber}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

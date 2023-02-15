@@ -14,12 +14,10 @@ class Home extends StatelessWidget {
       padding: const EdgeInsets.only(top: 25, left: 16, right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HomePermission(
-            id: Provider.of<PermissonProvider>(context).list[3].id,
-          ),
-          const SizedBox(height: 10),
-          const TitleWithChild()
+        children: const [
+          HomePermission(),
+          SizedBox(height: 10),
+          TitleWithChild()
         ],
       ),
     );

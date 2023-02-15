@@ -146,54 +146,52 @@ class Slider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Stack(
-        children: [
-          Image.asset(
-            slide!.image!,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.only(top: 90, bottom: 80),
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/gradient.png',
-                ),
-                fit: BoxFit.cover,
-              )),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.1,
-                    child: Text(
-                      slide!.title!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.1,
-                    child: Text(
-                      slide!.description!,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
+    return Stack(
+      children: [
+        Image.asset(
+          slide!.image!,
+          width: MediaQuery.of(context).size.width,
+        ),
+        Positioned(
+          bottom: 0,
+          child: Container(
+            padding: const EdgeInsets.only(top: 90, bottom: 80),
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage(
+                'assets/images/gradient.png',
               ),
+              fit: BoxFit.cover,
+            )),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  child: Text(
+                    slide!.title!,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  child: Text(
+                    slide!.description!,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

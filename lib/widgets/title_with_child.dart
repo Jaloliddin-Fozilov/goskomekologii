@@ -26,10 +26,13 @@ class TitleWithChild extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: permessionProvider.list.length,
-              itemBuilder: (ctx, i) => PermissionItem(
-                id: permessionProvider.list[i].id,
+            child: RefreshIndicator(
+              onRefresh: () async => permessionProvider.getPermissions(),
+              child: ListView.builder(
+                itemCount: permessionProvider.list.length,
+                itemBuilder: (ctx, i) => PermissionItem(
+                  id: permessionProvider.list[i].id,
+                ),
               ),
             ),
           ),

@@ -14,32 +14,41 @@ class FriendsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Мои друзья',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Сохраненные данные друзей',
-                style: TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 10),
-              SingleChildScrollView(
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async =>
+                  await Provider.of<FriendProvider>(context, listen: false)
+                      .getFriends(),
+              child: SingleChildScrollView(
                 child: Column(
-                  children: Provider.of<FriendProvider>(context)
-                      .list
-                      .map((friend) => FriendItem(friend: friend))
-                      .toList(),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Мои друзья',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Сохраненные данные друзей',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: Provider.of<FriendProvider>(context)
+                          .list
+                          .map((friend) => FriendItem(friend: friend))
+                          .toList(),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
           SizedBox(
             width: double.infinity,

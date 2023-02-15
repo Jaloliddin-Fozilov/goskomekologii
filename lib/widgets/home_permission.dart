@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:goskomekologii/screens/checkout_page.dart';
+import 'package:goskomekologii/screens/permission_detail_page.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/permission_provider.dart';
 
 class HomePermission extends StatefulWidget {
-  final int id;
-  const HomePermission({required this.id, super.key});
+  const HomePermission({super.key});
 
   @override
   State<HomePermission> createState() => _HomePermissionState();
@@ -19,25 +19,19 @@ class _HomePermissionState extends State<HomePermission> {
   String currentStatus = 'done';
   @override
   Widget build(BuildContext context) {
-    final permession =
-        Provider.of<PermissonProvider>(context).findById(widget.id);
-
-    void changeStatus() {
-      if (index < statuses.length - 1) {
-        index++;
-      } else {
-        index = 0;
-      }
-      setState(() {
-        currentStatus = statuses[index];
-      });
+    final provider = Provider.of<PermissonProvider>(context, listen: true);
+    var permession;
+    currentStatus = 'done';
+    if (provider.currentList.isNotEmpty) {
+      permession = provider.currentList.last;
+      currentStatus = permession.status;
     }
 
     return currentStatus == 'done'
         ? Column(
             children: [
               GestureDetector(
-                onTap: changeStatus,
+                onTap: () {},
                 child: Image.asset('assets/images/not_active.png'),
               ),
               SizedBox(
@@ -60,7 +54,11 @@ class _HomePermissionState extends State<HomePermission> {
         : Column(
             children: [
               GestureDetector(
-                onTap: changeStatus,
+                onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) =>
+                            PermissionDetailPage(id: permession.id)))),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -96,14 +94,14 @@ class _HomePermissionState extends State<HomePermission> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${permession.title} от ${permession.startDate.year}.${permession.startDate.month}.${permession.startDate.day}',
+                                        '${permession.title} от ${permession.startDate}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
-                                        '${permession.address}${permession.startDate.year}.${permession.startDate.month}.${permession.startDate.day}-${permession.endDate.year}.${permession.endDate.month}.${permession.endDate.day}',
+                                        '${permession.address} ${permession.startDate}-${permession.endDate}',
                                       ),
                                     ],
                                   ),
